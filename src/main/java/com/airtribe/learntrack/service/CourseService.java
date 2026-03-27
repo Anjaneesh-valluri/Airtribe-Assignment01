@@ -13,10 +13,13 @@ public class CourseService {
         System.out.println("Course Added Successfully");
     }
 
-    public void displayAll(){
+    public void displayAll() throws EntityNotFoundException{
         System.out.println("Here are all the details of the Courses: ");
+        if(Courses.isEmpty())
+            throw new EntityNotFoundException("No courses present");
         for(Courses e : Courses){
             System.out.println("Course's ID: "+e.getId()+" Course's Name: "+e.getCourseName()+" Course's e-mail: "+e.isActive());
+            return;
         }
     }
 

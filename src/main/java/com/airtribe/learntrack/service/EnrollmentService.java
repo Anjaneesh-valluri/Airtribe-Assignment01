@@ -18,7 +18,7 @@ public class EnrollmentService {
     ArrayList<Enrollment> enrollments = new ArrayList<Enrollment>();
     LocalDate date = LocalDate.now();
 
-    EnrollmentService(StudentService studentService, CourseService courseService){
+    public EnrollmentService(StudentService studentService, CourseService courseService){
         this.courseService = courseService;
         this.studentService=studentService;
     }
@@ -29,20 +29,32 @@ public class EnrollmentService {
             Enrollment enrollment = new Enrollment(IdGenerator.getNewEnrollmentId(),studentId,courseId,date, Enrollment.Status.ACTIVE );
             enrollments.add(enrollment);
             System.out.println("Enrollment done successfully !");
+            return;
+        }
+        throw new EntityNotFoundException("Please verify IDs again");
+
+    }
+    public void updateStatus(int enrollmentId, Enrollment.Status newStatus) throws EntityNotFoundException{
+        for(Enrollment e: enrollments) {
+            if (e.getId() == enrollmentId) {
+                e.setStatus(newStatus);
+                System.out.println("Status is updated successfully");
+                return;
+            }
+            throw new EntityNotFoundException("Unable to find any enrollment with the Enrollment number: "+enrollmentId);
         }
 
     }
-    public void updateStatus(int enrollmentId, Status newStatus){
-        
-    }
 
-    public ArrayList<Enrollment> getEnrollmentByStudent throws EntityNotFoundException(int studentId){
+    public ArrayList<Enrollment> getEnrollmentByStudent (int studentId) throws EntityNotFoundException{
         ArrayList<Enrollment> output = new ArrayList<Enrollment>();
         for(Enrollment e : enrollments){
-            output.add(e);
+            if(e.getStudentId()==studentId)
+                output.add(e);
         }
+        if(output.isEmpty())
+            throw new EntityNotFoundException("Unable to find any enrollments");
         return output;
-        throw new EntityNotFoundException("Unable to find any enrollments");
     }
 
 }
