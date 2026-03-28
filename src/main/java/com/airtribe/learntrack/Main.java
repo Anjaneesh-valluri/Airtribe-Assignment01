@@ -11,14 +11,18 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String args[]){
+        String menu = "-------------MENU--------------\nPlease enter a choice: \n 1. Add a student\n 2. View all the courses\n 3. Enroll a student to a course\n" +
+                " 4. Print a student details\n 5. Get all enrolments for a student \n 6. Display all the student details\n 7. Print new courses\n 8. Create/Add a new Course \n 0. Exit\n Please enter your choice: ";
         StudentService studentService = new StudentService();
         CourseService courseService = new CourseService();
         EnrollmentService enrollmentService = new EnrollmentService(studentService, courseService);
         Scanner sc = new Scanner(System.in);
-        System.out.println("Hello Welcome to AirTribe Learning console!!!\nPlease enter a choice: \n 1. Add a student\n  2. View all the courses\n 3. Enroll a student to a course\n 0. Exit\n Please enter your choice: ");
+        System.out.println("Hello, Welcome to AirTribe Learning console!!!\n"+menu);
         int input=sc.nextInt() ;
         sc.nextLine();
         while(input!=0){
+            int studentId =0;
+            int courseId =0;
             switch(input){
                 case 1:
                     System.out.println("Please provide details of the new student:\n1. Firstname: ");
@@ -42,12 +46,60 @@ public class Main {
                     catch(EntityNotFoundException e){
                         System.out.println(e.getMessage());
                     }
+                    break;
+                case 3:
+                    System.out.println("Enter student ID and course ID: ");
+                    studentId=sc.nextInt();
+                    courseId=sc.nextInt();
+                    try{
+                        enrollmentService.enroll(studentId,courseId);
+                    }
+                    catch(EntityNotFoundException e){
+                        System.out.println(e.getMessage());
+
+                }
+                    break;
+                case 4:
+                    System.out.println("Enter the student ID: ");
+                    studentId=sc.nextInt();
+                    Student student;
+                    try {
+                       student = studentService.getById(studentId);
+                       System.out.println("Here are the details of the student:\n ID: "+student.getId()+" FullName: "+student.getFullName()+" E-mail: "+student.getEmail()+" Batch: "+student.getClass());
+                    }
+                    catch(EntityNotFoundException e){
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 5:
+                    System.out.println("Enter the student ID: ");
+                    studentId=sc.nextInt();
+                    try {
+                        enrollmentService.getEnrollmentByStudent(studentId);
+                    }
+                    catch (EntityNotFoundException e){
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 6:
+                    System.out.println("Here are all the details of the students:\n");
+                    try{
+                        studentService.displayAll();
+                    }
+                    catch(EntityNotFoundException e){
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                default:
+                    System.out.println("Sorry wrong input, select a valied option.");
+                    break;
+
 
             }
-            System.out.println("-------------Action end------------\nPlease enter a choice: \n1. Add a student\n2. View all the courses\n3. Enroll a student to a course\n0. Exit\n Please enter your choice: ");
+            System.out.println(menu);
             input=sc.nextInt();
         }
-
+        System.out.println("Exiting, Thank you.....!!!");
 
 
     }
